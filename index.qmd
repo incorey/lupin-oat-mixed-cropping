@@ -1,0 +1,41 @@
+---
+# For Scolar Frontmatter doc: https://quarto.org/docs/authoring/front-matter.html
+title: "Mixed cropping of narrow-leaved lupin and oat enhances plant health and yield stability without compromising protein yield or land use efficiency"
+  
+author:
+ - name: "Yannik Schlup^a,c^"
+   affiliation: 
+      - "a Research group Extension Arable Crops, Competence Division Plant and Plant Products Agroscope, Zurich, Switzerland"
+      - "c Sustainable Agroecosystems, Department of Environmental Systems Science, ETH Zurich, Zurich, Switzerland"
+
+ - name: "Lukas Graz^b^"
+   affiliation: "b b Seminar for Statistics, Department of Mathematics, ETH Zurich, Zurich, Switzerland"
+ - name: "Andreas Kaegi^a^"
+   affiliation: "a Research group Extension Arable Crops, Competence Division Plant and Plant Products, Agroscope, Zurich, Switzerland"
+ - name: "Johan Six^c^"
+   affiliation: "c Sustainable Agroecosystems, Department of Environmental Systems Science, ETH Zurich, Zurich, Switzerland"
+ - name: "Susanne Vogelgsang^a^"
+   affiliation: "a Research group Extension Arable Crops, Competence Division Plant and Plant Products, Agroscope, Zurich, Switzerland"
+   email: "susanne.vogelgsang@agroscope.admin.ch"
+   corresponding: true  # Mark this author as the corresponding author
+
+keywords: [Narrow-leaved lupin, mixed cropping, protein yield, intercropping, food safety, biodiversity]
+
+---
+
+{{< include writing/05-index.qmd >}}
+
+{{< include writing/10-abstract.qmd >}}
+
+{{< include writing/15-intro.qmd >}}
+
+{{< include writing/20-methods.qmd >}}
+
+{{< include writing/25-results.qmd >}}
+
+{{< include writing/30-discussion.qmd >}}
+
+{{< include writing/50-references.qmd >}}
+
+{{< include writing/60-supplements.qmd >}} 
+

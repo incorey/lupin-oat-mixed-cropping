@@ -1,0 +1,35 @@
+# Abstract
+
+*Introduction*
+This study examines the effects of mixed cropping of narrow-leaved lupin (NLL) with oat on plant health, yield stability, protein yield, and land use efficiency. The aim was to advances the understanding of on-field and post-harvest quality metrics in mixed cropping, by integrating the assessments of plant health, crop development, and productivity into a single study.
+
+*Methods*
+A two-year field experiment was conducted at two sites in Switzerland, involving three NLL varieties (Lunabor, Probor, Jowisz) and three oat varieties (Bison, Lion, Troll) in pure and mixed stands, the latter in a 90/10% replacement design. Data were collected on agronomic traits including plant health and development, weed pressure, and productivity metrics including (protein) yield, and thousand kernel and hectolitre weight. Mixed-effects models assessed treatment effects, with pairwise contrasts evaluating specific varietal effects.
+
+*Results*
+Mixed cropping significantly reduced cereal leaf beetle incidence in oats by 41% with Lion and 46% with Troll. Weed volumes in mixed NLL treatments decreased by 83%. Oat yields in mixtures exceeded the expected performance by sowing ratio, while their quality increased with regards to elevated protein content and hectolitre weight. And NLL yields remained stable or slightly reduced, while maintaining their crop quality including their high protein contents. Lunabor mixed with Troll exhibited a significantly elevated land use efficiency, while all other combinations remained stable across pure and mixed stands, which also applied to the protein yield. Further, no mixed cropping effect could be detected for multiple attributes assessed, such as plant developmental stages, height in late growth stages, and oat tiller numbers. 
+
+*Discussion*
+The inclusion of a non-host crop likely caused a dilution effect and thus contributed to the cereal leaf beetle reduction in mixed stands. Enhanced weed suppression in NLLs align with the allelopathic suppression effects exerted by the oat crop, while the high oat yields and improved quality align with the sparing effect, where legume nitrogen fixation increases nitrogen availability for the cereal partner. Additionally, the absence of mixed cropping effects on the above-mentioned multiple traits allows to predict mixed cropping performance based on pure stand performance. Despite location effects related to calcium content and pH, the mixed cropping system buffered against adverse conditions, exhibiting strong yield stabilisation through complementary reactions of the cropping partners.
+
+*Conclusion*
+NLL-oat mixed cropping systems improved yield stability and plant health without reducing protein yield or land use efficiency, nor requiring inputs otherwise needed for a pure oat crop. The findings underscore the potential of mixed cropping for sustainable intensification, particularly in organic systems, where chemical inputs are limited.
+
+keywords: Narrow-leaved lupin, mixed cropping, intercropping, oat, protein, biodiversity
+
+# Highlights
+
+- Mixed cropping reduced cereal leaf beetle incidence by up to 46% in oat.
+
+- Weed volumes in mixed lupin stands decreased by 83%.
+
+- Oat protein content and increased by up to 31%.
+
+- On multiple traits, a mixed cropping effect was excluded allowing for prediction of mixed cropping suitability based on monocrops performance.
+
+- Mixed cropping improved overall yield stability without compromising total protein yield.
+
+
+# Graphical abstract
+
+![Figure 1: Graphical abstract.](/writing/pictures/250318_Graphical abstract.pdf){#fig-des width=100%}

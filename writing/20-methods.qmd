@@ -1,0 +1,161 @@
+# Methods
+
+## Varieties
+
+Three narrow-leaved lupin (NLL) and three oat varieties were chosen based on the breeders fact sheets. Branching, spring-NLLs and early-maturing spring oat varieties were selected to increase the chances of coincidental ripening. The selected, NLL varieties were
+
+- Lunabor, bred by Saatzucht Steinach in Germany
+- Probor, bred by Saatzucht Steinach in Germany
+- Jowisz (synonym: Jupiter), bred by HR Smolic in Poland
+
+And the selected, early maturing spring oat varieties were
+
+- Bison, Hauptsaaten für die Rheinprovinz GmbH, Germany, medium tall
+- Lion, Nordsaat Saatzucht GmbH, Germany, medium tall
+- Troll, Saatzucht Bauer GmbH & Co. KG, Germany, short
+
+## Treatments and experimental design
+The NLL and oat varieties were cultivated in pure and mixed stands. The pure oat varieties were fertilised according to the local guidelines ([Table 2](#tbl_sites)). In the mixed stands, each NLL variety was co-cultivated with each oat variety in a replacement design. The NLLs were sown at 90% of their pure stand’s density, whereas the oats, due to their high competitiveness, were sown at 10% of their pure stand’s density [@kato-noguchi1994; @bohm] ([Table 1](#tbl_trt)). The sowing amounts were adapted to the germination rate evaluated two weeks before sowing.
+
+::: {.table-caption #tbl-trt}
+Treatments of the study: Narrow-leaved lupin and oat varieties, the stand (pure versus mixed), sowing ratios, respective sowing densities and corresponding amount of seeds per hectare (corrected to a 90% germination rate). For the two numbers present in the mixed treatments, the first one refers to the narrow-leaved lupins, the second one to the oats.
+:::
+
+| Varieties        | Stand   | Sowing ratios (%)  | Sowing density (plants/m²) | Amount (kg/ha) |
+|------------------|---------|--------------------|----------------------------|----------------|
+| Bison            | pure    | 100                | 300                        | 168            |
+| Lion             | pure    | 100                | 300                        | 121            |
+| Troll            | pure    | 100                | 300                        | 110            |
+| Lunabor          | pure    | 100                | 120                        | 220            |
+| Probor           | pure    | 100                | 120                        | 170            |
+| Jowisz           | pure    | 100                | 120                        | 214            |
+| Lunabor + Bison  | mixed   | 90, 10             | 108 / 30                   | 198 / 17       |
+| Lunabor + Lion   | mixed   | 90, 10             | 108 / 30                   | 198 / 12       |
+| Lunabor + Troll  | mixed   | 90, 10             | 108 / 30                   | 198 / 11       |
+| Probor + Bison   | mixed   | 90, 10             | 108 / 30                   | 153 / 17       |
+| Probor + Lion    | mixed   | 90, 10             | 108 / 30                   | 153 / 12       |
+| Probor + Troll   | mixed   | 90, 10             | 108 / 30                   | 153 / 11       |
+| Jowisz + Bison   | mixed   | 90, 10             | 108 / 30                   | 193 / 17       |
+| Jowisz + Lion    | mixed   | 90, 10             | 108 / 30                   | 193 / 12       |
+| Jowisz + Troll   | mixed   | 90, 10             | 108 / 30                   | 193 / 11       |
+
+
+The fields of this two-year study were arranged as a randomised complete block design (RCBD), consisting of four blocks. To lower the border effect to a minimum, each treatment was sown in three adjacent plots and only the middle plot was scored and harvested. The size of each harvested plot was seven square metres ([Figure 1](#fig-des)).
+
+![Figure 1: Arrangement of plots to reduce border effects. The red line enfolds the three plots of the same treatment while the yellow dashed line enfolds the harvested plot. Between adjacent treatments, a 1.2-metre corridor was mowed.](/writing/pictures/Experimental_design_graph.png){#fig-des width=50%}
+
+## Site, husbandry and weather data
+The sites of both years were located in the same two areas, in the canton of Zurich, Switzerland, Seegräben and Reckenholz, and were chosen based on their differing soil properties. The soils in Seegräben were sandy without free calcium, and pH-values ranging between 6 and 6.5. The soils in Reckenholz were loamy clay, containing some free calcium, and pH-values ranged from 6.8 to 7. [Table 2](#tbl_sites) provides an overview of the sites and relevant husbandry measures dates. The fields were amended with 350 kgha^-1^ of compost in fall, ploughed three weeks and harrowed one week before sowing, respectively. Less than twelve hours before sowing, the NLL seeds were inoculated with sterile peat inoculum containing the rhizobium bacterium *Bradyrhizobium lupinus*. The inoculum was produced by Legume Technology Ltd, Nottinghamshire, UK. The same batch of inoculum was used in both years and stored dry and under exclusion of humidity at 10°C. After the inoculation, every 7m^2^ plot was sown individually in rows with 18 cm spacing. The plots were sown with a plot sowing tractor and RTK-GPS-orientation. Mechanical weeding was performed after emergence and during early tillering (spring-tine and shallow inter-row cultivation). The pure oats were fertilised during late tillering, before the elongation stage. The crops developed well without the need for any pest or disease control interventions. 
+
+::: {.table-caption #tbl-sites}
+Field characteristics and husbandry measures. Free calcium was assessed by repetitive hydrochloric acid tests for carbonate. LOD = Limit of detection.
+:::
+
+| Site and year          | Reckenholz 2022 | Reckenholz 2023  | Seegräben 2022 | Seegräben 2023 |
+|------------------------|-----------------|------------------|----------------|----------------|
+| Year                   | 2022            | 2023             | 2022           | 2023           |  
+| Latitude (°N)          | 47.4406         | 47.42937         | 47.34787       | 47.36007       |
+| Longitude (°E)         | 8.49807         | 8.51689          | 8.75801        | 8.76253        |
+| Pre-crop               | Silage maize    | Silage maize     | Silage maize   | Silage maize   |
+| Pre-pre-crop           | Flower strip    |Artificial pasture| Winter wheat   | Winter barley  |
+| Sowing                 | March 4         | February 16      | March 10       | February 22    |
+| Mechanical weeding     | March 21        | February 22      | March 17       | March 1        |
+| Mechanical weeding     | April 5         | April 4          | March 31       | April 5        |
+|Oat fertilisation (kg N)| 27.5            | 30               | 27.5           | 30             |
+| Harvest                | July 12         | July 10          | July 19        | July 19        |
+| Soil-type              | Loamy clay      | Loamy clay       | Sandy loam     | Sandy loam     |
+| Soil-pH (H~2~O)        | 6.9             | 7.0              | 6.2            | 6.4            |
+| Free calcium (HCl 10%) | Low (0.5-2%)    | Medium (2-5%)    | >LOD           | >LOD           |
+
+
+Both cultivation seasons were characterised by temperatures above average throughout the season and high sunshine durations ([Table 3](#tbl_weather)).
+
+::: {.table-caption #tbl-weather}
+Weather data in the cultivation seasons 2022 and 2023, retrieved from the closest weather stations of MeteoSwiss. The italicised columns provide the reference values of the period 1990 to 2020 during the cultivation season. The distance of the weather station to the site was 0.25, up to maximum 4 kilometres. Data were retrieved daily and the average temperature and humidity as well as the sum of precipitation and sunshine hours across the cultivation period were calculated (data retrieved from MeteoSwiss).
+:::
+
+| Parameters and site  | Seegräben  | Seegräben  | *Seegräben*  | Reckenholz | Reckenholz | *Reckenholz*  |
+|----------------------|------------|------------|--------------|------------|------------|---------------|
+| Year                 | 2022       | 2023       | *1990-2020*  | 2022       | 2023       | *1990-2020*   |
+| Mean temperature (°C)| 14.1       | 13.8       | *12.3*       | 17.7       | 17.4       | *16.0*        |
+|Precipitation sum (mm)| 504        | 500        | *530*        | 244        | 362        | *410*         |
+| Mean humidity (%)    | 69         | 71         | *72*         | 68         | 71         | *70*          |
+| Sunshine sum (hours) | 980        | 910        | *802*        | 1015       | 950        | *841*         |
+
+## On-field phenotyping
+Plant growth stages were scored on a daily basis during the flowering period of the NLLs, the ears emergence of the oats and before the harvest of the crops. Soil coverage was scored daily, until the date the crops fully covered the soil (fractional canopy cover > 98%). During the ears emergence of oats and flowering of the NLLs, as well as one week before harvest, average plant height, lodging area percentages of NLLs and oats, and weed volumes were recorded. Weed volume was scored by multiplying the weeds' fractional canopy cover (FCC), with the weeds' plant height relative to the plant height of the crop, according to the method proposed by Andújar et al. 2016 [@andujar2016]. This scoring method was chosen to obtain a more accurate estimate of the weed pressure compared with scoring the FCC only, and also due to its non-destructive nature. Additionally, the average number of oat tillers were scored on three plants per plot after tillering. Pests and diseases that appeared were scored in the time points of their respective biological relevance ([Table 4](#tbl_pheno))[@zotero-498]. The NLLs determinism at harvest was scored by the percentage of plants that resumed flowering after reaching BBCH 85.
+
+::: {.table-caption #tbl-pheno}
+Scoring method used for pests and diseases and the BBCH growth stage, in which the pests and diseases were scored, which was the time point when they appeared and had the highest biological relevance. Interference threshold describes the severity, at which an interference is recommended according to Swiss farming practices (if applicable) [@zotero-498].
+:::
+
+| Pest or disease and pathogen           | Crop | Scoring method                              |Growth stage| Interference threshold |
+|----------------------------------------|------|---------------------------------------------|------------|-------------|
+| Anthracnose (*Colletotrichum lupini*)  | lupin|Number of dead pods                          | All pods visible | –           |
+| Mildew (*Erysiphe lupini*)             | lupin|Incidence on 20 plants * severity on 3 top leaves| Blossoming | –           |
+| Aphids (*Aphis ssp.*)                  | oat  |Incidence on 50 ears                         | Anthesis   | 60% of ears infected|
+| Cereal leaf beetle (*Oulema ssp.*)     | oat  |Number of larvae on 10 flag leaves           | Anthesis   | 2 larvae per flag leaf|
+| Crown rust (*Puccinia coronata*)       | oat  |Incidence on 20 plants * severity on 3 top leaves| Anthesis   | 20% of leaves infected |
+| Leaf spot (*Drechslera avenae*)        | oat  |Incidence on 100 leaves (4. from top)        | Booting    | 20% of leaves infected |
+| Mildew (*Blumeria graminis*)           | oat  |Incidence on 120 leaves                      | Anthesis   | 25% of leaves infected |
+|Septoria leaf blotch (*Septoria avenae*)| oat  |Incidence on 100 leaves (4. from top)        | Booting    | 20% of leaves infected |
+
+
+## Harvest and post-harvest analyses
+The grains were harvested with a plot combine harvester. In a second step, the grains were additionally cleaned in a vertical air sifter (in-house build). The samples were dried to 10% moisture content. In mixed treatments, the oats were separated from the NLLs with a grain cleaner (Westrup, Slagelse, Denmark), where a 6mm oval-cut sieve was deployed. The cleaned samples were weighted to measure the yield, and then repetitively divided using a riffle divider (sample splitter RT6.5, Retsch ltd., Haan, Germany), to obtain representative 150 g samples. These representative samples were analysed for their hectolitre weight (Grain Analysis Computer, Model GAC2100 by DICKEY_John® corporation, Illinois, USA), oat thousand kernel weight (Seed counter MARVIN®, by MARViTECH GmbH, Wittenburg, Germany), and total protein content of oats and NLLs by near-infrared spectroscopy (Infratec NOVA, FOSS analytical, Hilleroed, Denmark).
+
+## Statistical analysis
+
+### Data preparation and calculations
+Based on the primary data, productivity metrics were calculated to assess the partial land equivalent ratio of each crop in mixture (par_LER<sub>crop</sub>, formula 1), the land equivalent ratio of the mixture (LER, formula 2), the total protein yield (Protein_yield<sub>crop</sub>, formula 3), and the partial (par_TOI<sub>protein</sub>, formula 4) and total protein overyielding (TOI<sub>protein</sub>, formula 5) [@zustovi2024; @li2023]:
+
+$$
+\text{par\_LER}_{\text{crop}} = \frac{\text{Yield}_{\text{mixed, crop}}}{\text{Yield}_{\text{pure, crop}}} \tag{1}
+$$
+
+$$
+LER = \text{par\_LER}_{\text{lupin}} + \text{par\_LER}_{\text{oat}} \tag{2}
+$$
+
+$$
+\text{Protein\_yield}_{\text{crop}} = \text{Yield}_{\text{crop}} \times \text{Protein\_content}_{\text{crop}} \tag{3}
+$$
+$$
+\text{par\_TOI}_{\text{protein, crop}} = \frac{\text{Protein\_yield}_{\text{crop, mixed}}}{\max(\text{Protein\_yield}_{\text{lupin, pure}}, \text{Protein\_yield}_{\text{oat, pure}})} \tag{4}
+$$
+
+$$
+\text{TOI}_{\text{protein}} = \text{par\_TOI}_{\text{protein, lupin}} + \text{par\_TOI}_{\text{protein, oat}} \tag{5}
+$$
+
+Pure and mixed refer to the stand, pure to the cultivation in monocropping, mixed in mixed cropping. Those metrics allow to compare the mixed cropping system's land use, productivity, and overyielding of total yield and protein relative to their monocropping equivalents.
+
+To further prepare the data for the analysis, differences were calculated between the pure and mixed stands for the
+
+- date when the canopy fully covered the soil
+- oat ears emergence
+- lupin flowering
+- Plant developmental stage at harvest according to the BBCH scale (Bologische Bundesanstalt, Bundessortenamt und CHemische Industrie)
+
+If the variance in the response variable was not constant, this response variable was either square-root or log<sub>10</sub>-transformed (as specified in Appendix A of the supplemental materials). 
+To analyse the yield stability, the partial plot-level yields were evaluated by means of Pearson-correlation.
+
+### Modelling
+
+The (transformed) data was analysed using linear mixed-effects models. Four model-classes M1-M4 were designed to suit the target-variables ([Table 8](#tbl_mdls)). The treatment, year, site, and their interaction effects were modelled as fixed effects and the block within a field as a random effect.
+The models were fitted using the `lme4` package within the R programming language [@bates2015; @zotero-47]. Inferences were calculated using the lmerTest package, which provides the shatterweights degree of freedom adjustment for the type-III ANOVA and the `contest`-function, which was used to test linear contrasts [@kuznetsova2017]. The contrast sum parametrisation was used to allow the interpretability of the regression coefficients to the population mean, but partially fitted intercepts were used for each group in case of the M2 and M4 models (R syntax: "y~0+group"). Post-hoc pairwise comparisons were performed to assess varietal differences.
+
+
+::: {.table-caption #tbl-mdls}
+Statistical models deployed to analyse the data. The characteristics explain the details of the model. Each response variable in the present study was analysed with one or more of the models listed in the table.
+:::
+
+| Model    | Characteristics                                 |
+|----------|-------------------------------------------------|
+| M1       | This model answered if the response variable differed in mixtures and pure NLLs (or analogously oats) across all varieties. It performed an ANOVA using the NLL/oat-variety and the binary variable stand = mixed. This model considered each species separately. |
+| M2       | M2 answered if the response variable differed in mixtures and pure NLLs or oats. Here, this was achieved by computing the linear contrasts of each pure NLL/oat variety with the mean of its respective mixtures. This model considered each species separately. |
+| M3       | On the subset of only mixed plots, M3 performed a two-way (mixed) ANOVA with the factors oat variety and lupin variety (adjusting for site, year, and block). This model considered both species together. |
+| M4       | M4 answered the question, if the estimated value of the treatments with mixed stands (e.g. the land equivalent ratio) was significantly different from an expected value (e.g. LER = 1) after a Bonferroni correction (with the respective 12 coefficients). |
+
+### Robustification
+To mitigate the influence of outliers, the outlier weights were automatically adapted using the weights from the analogous model derived by the `rlmer` function of the robustlmm package [@koller2016]. Target outliers were selected by applying the bounded influence function of huber loss. This application of the robustification is indicated in the supplemented materials, Appendix A (robustify = TRUE).

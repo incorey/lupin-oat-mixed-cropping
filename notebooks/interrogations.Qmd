@@ -1,0 +1,885 @@
+---
+title: Data Interrogations
+author: Yannik Schlup
+date: 2024-10-11
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+---
+
+here we do little interrogations of the data (next to the main hypotheses.csv tests)
+
+## SETUP
+```{r}
+# if (!interactive()) setwd("..")
+
+options(digits = 3)
+source("R/DataPrep.R")
+source("R/eval_hyp.R")
+hypotheses <- read.csv("./hypotheses.csv")
+```
+
+
+## Full overview table
+```{r, overview table}
+library(readxl)
+library(dplyr)
+library(tidyr)
+
+# Filter out treatments 23 and 24 and retain treatments 1-22
+filtered_data <- D_orig %>% 
+  filter(treatment %in% 1:22)
+
+str(D_orig) #one date is a chr?
+
+D_orig <- D_orig %>%
+  mutate(
+    date_when_covered_diff_mix_to_pure_lupin = as.numeric(as.character(date_when_covered_diff_mix_to_pure_lupin))
+  )
+str(D_orig$date_when_covered_diff_mix_to_pure_lupin)
+
+# Select variables starting from "date_when_covered" onward
+# start_index <- grep("date_when_covered", names(D_orig))[1]  # Take the first match
+start_index <- grep("lupin_bbch_65_mix_to_pure_diff", names(D_orig))[1]  # Take the first match
+
+# Select all columns from "date_when_covered" to the last column
+
+columns_to_summarize <- names(D_orig)[
+  start_index:ncol(D_orig)]
+columns_to_summarize
+
+# Summarize the data by treatment
+summary_table <- filtered_data %>%
+  group_by(treatment) %>%
+  summarise(across(
+    all_of(columns_to_summarize), 
+    ~ if (all(is.na(.))) NA else median(., na.rm = TRUE), 
+    .names = "median_{col}"
+  )) %>%
+  ungroup()
+
+# anyDuplicated(names(summary_table))
+
+print(summary_table, n = Inf)
+
+# Reshape the table into a wide format for better visualization
+transposed_summary_table <- summary_table %>%
+  pivot_longer(
+    cols = -treatment,       # Exclude the "treatment" column
+    names_to = "variable",   
+    values_to = "value"     
+  ) %>%
+  pivot_wider(
+    names_from = treatment,  
+    values_from = value     
+  )
+transposed_summary_table <- transposed_summary_table %>%
+  mutate(across(where(is.numeric), ~ round(., 2)))
+
+# Save the rounded table as a CSV file
+write.csv(transposed_summary_table, "transposed_summary_table.csv", row.names = FALSE)
+
+# View the rounded table (optional)
+print(transposed_summary_table, n = Inf)
+```
+
+
+## Graphs
+Always run the first plot since the code is not repetitive
+
+```{r, yield with labels median and MAD}
+#load required libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+#numeric treatment
+D_filtered <- D %>%
+  filter(treatment %in% 4:18) %>%
+  mutate(treatment = as.numeric(as.character(treatment)))
+
+#assign x-variety label
+D_filtered <- D_filtered %>%
+  mutate(
+    x_label = case_when(
+      treatment %in% 4:6  ~ as.character(cv_oat),
+      treatment %in% 7:9  ~ as.character(cv_lupin),
+      treatment %in% 10:18 ~ paste(cv_oat, "×", cv_lupin)
+    )
+  )
+
+#median and median absolute deviation
+D_summary <- D_filtered %>%
+  group_by(treatment, x_label, cv_oat, cv_lupin) %>%
+  summarise(
+    oat_yield_median = median(oat_tha, na.rm = TRUE),
+    oat_yield_mad = mad(oat_tha, na.rm = TRUE),
+    lupin_yield_median = median(lupin_tha, na.rm = TRUE),
+    lupin_yield_mad = mad(lupin_tha, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(oat_yield_median, lupin_yield_median), 
+               names_to = "crop", 
+               values_to = "yield") %>%
+  mutate(
+    mad = ifelse(crop == "oat_yield_median", oat_yield_mad, lupin_yield_mad),
+    crop = recode(crop, "oat_yield_median" = "Oat Yield", "lupin_yield_median" = "Lupin Yield")
+  ) %>%
+  drop_na(yield, mad)
+
+#error bar position
+D_summary <- D_summary %>%
+  group_by(treatment) %>%
+  mutate(
+    lupin_yield = ifelse(crop == "Lupin Yield", yield, 0),
+    oat_yield = ifelse(crop == "Oat Yield", yield, 0),
+
+    #summarize yield
+    stacked_yield = sum(yield, na.rm = TRUE),
+
+    #lupin error bar position
+    errorbar_min = ifelse(crop == "Lupin Yield", yield - mad, yield),  
+    errorbar_max = ifelse(crop == "Lupin Yield", yield + mad, yield),  
+
+    #oat error bar position
+    errorbar_min = ifelse(crop == "Oat Yield" & treatment >= 10, stacked_yield - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Yield" & treatment >= 10, stacked_yield + mad, errorbar_max),
+
+    #pure treatments error bar position
+    errorbar_min = ifelse(crop == "Oat Yield" & treatment < 7, oat_yield - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Yield" & treatment < 7, oat_yield + mad, errorbar_max)
+  )
+
+#NA issue lupin error bars
+D_summary <- D_summary %>%
+  ungroup() %>%
+  mutate(
+    errorbar_min = ifelse(is.na(errorbar_min), yield - mad, errorbar_min),
+    errorbar_max = ifelse(is.na(errorbar_max), yield + mad, errorbar_max)
+  )
+
+#stacking order
+D_summary <- D_summary %>%
+  arrange(treatment, crop)
+
+#color mapping
+D_summary <- D_summary %>%
+  mutate(fill_color = ifelse(crop == "Oat Yield", as.character(cv_oat), as.character(cv_lupin)))
+
+#color definition
+oat_colors <- c("Bison" = "#117733", "Lion" = "#44AA99", "Troll" = "#88CCEE")
+lupin_colors <- c("Jowisz" = "#CC6677", "Lunabor" = "#882255", "Probor" = "#AA4499")
+
+#fill color conversion
+D_summary$fill_color <- factor(D_summary$fill_color, levels = c("Bison", "Lion", "Troll", "Lunabor", "Probor", "Jowisz"))
+color_palette <- c(oat_colors, lupin_colors)
+
+#plot it
+p1 <- ggplot(D_summary, aes(x = factor(x_label, levels = unique(x_label)), y = yield, fill = fill_color)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.7, color = "black") + 
+  geom_errorbar(aes(ymin = errorbar_min, ymax = errorbar_max, group = crop), 
+                width = 0.3, 
+                color = "black") +  
+  scale_fill_manual(values = color_palette, guide = guide_legend(title = "Variety", override.aes = list(size = 6))) +
+  labs(
+    title = "Yield of oats and lupins across pure and mixed stands",
+    x = "Variety Combination",
+    y = expression("Yield ("*kg~ha^{-1}*")"),
+    fill = "Variety"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15, hjust = 0),  
+    axis.text.x = element_text(size = 11, angle = 45, hjust = 1),  
+    axis.text.y = element_text(size = 11),  
+    axis.title.x = element_text(size = 13),  
+    axis.title.y = element_text(size = 13),  
+    legend.text = element_text(size = 11),  
+    legend.title = element_text(size = 13),  
+    legend.key.size = unit(1.2, "lines")
+)
+```
+
+```{r protein yield median and mad}
+#median and mad
+D_summary <- D_filtered %>%
+  group_by(treatment, x_label, cv_oat, cv_lupin) %>%
+  summarise(
+    oat_protein_median = median(oat_proteinyield_kgha, na.rm = TRUE),
+    oat_protein_mad = mad(oat_proteinyield_kgha, na.rm = TRUE),
+    lupin_protein_median = median(lupin_proteinyield_kgha, na.rm = TRUE),
+    lupin_protein_mad = mad(lupin_proteinyield_kgha, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(oat_protein_median, lupin_protein_median), 
+               names_to = "crop", 
+               values_to = "protein_yield") %>%
+  mutate(
+    mad = ifelse(crop == "oat_protein_median", oat_protein_mad, lupin_protein_mad),
+    crop = recode(crop, "oat_protein_median" = "Oat Protein", "lupin_protein_median" = "Lupin Protein")
+  ) %>%
+  drop_na(protein_yield, mad)
+
+#error bars position
+D_summary <- D_summary %>%
+  group_by(treatment) %>%
+  mutate(
+    lupin_protein = ifelse(crop == "Lupin Protein", protein_yield, 0),
+    oat_protein = ifelse(crop == "Oat Protein", protein_yield, 0),
+
+    stacked_protein_yield = sum(protein_yield, na.rm = TRUE),
+
+    errorbar_min = ifelse(crop == "Lupin Protein", protein_yield - mad, protein_yield),  
+    errorbar_max = ifelse(crop == "Lupin Protein", protein_yield + mad, protein_yield),  
+
+    errorbar_min = ifelse(crop == "Oat Protein" & treatment >= 10, stacked_protein_yield - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Protein" & treatment >= 10, stacked_protein_yield + mad, errorbar_max),
+
+    errorbar_min = ifelse(crop == "Oat Protein" & treatment < 7, oat_protein - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Protein" & treatment < 7, oat_protein + mad, errorbar_max)
+  )
+
+#NAs handling
+D_summary <- D_summary %>%
+  ungroup() %>%
+  mutate(
+    errorbar_min = ifelse(is.na(errorbar_min), protein_yield - mad, errorbar_min),
+    errorbar_max = ifelse(is.na(errorbar_max), protein_yield + mad, errorbar_max)
+  )
+
+#stack order
+D_summary <- D_summary %>%
+  arrange(treatment, crop)
+
+#color mapping
+D_summary <- D_summary %>%
+  mutate(fill_color = ifelse(crop == "Oat Protein", as.character(cv_oat), as.character(cv_lupin)))
+
+oat_colors <- c("Bison" = "#117733", "Lion" = "#44AA99", "Troll" = "#88CCEE")
+lupin_colors <- c("Jowisz" = "#CC6677", "Lunabor" = "#882255", "Probor" = "#AA4499")
+
+D_summary$fill_color <- factor(D_summary$fill_color, levels = c("Bison", "Lion", "Troll", "Lunabor", "Probor", "Jowisz"))
+
+color_palette <- c(oat_colors, lupin_colors)
+
+#plot it
+p2 <- ggplot(D_summary, aes(x = factor(x_label, levels = unique(x_label)), y = protein_yield, fill = fill_color)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.7, color = "black") + 
+  geom_errorbar(aes(ymin = errorbar_min, ymax = errorbar_max, group = crop), 
+                width = 0.3, 
+                color = "black") +  
+  scale_fill_manual(values = color_palette, guide = guide_legend(title = "Variety", override.aes = list(size = 6))) +
+  labs(
+    title = "Protein yield of oats and lupins across pure and mixed stands",
+    x = "Variety Combination",
+    y = expression("Protein yield ("*kg~ha^{-1}*")"),
+    fill = "Variety"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15, hjust = 0),  
+    axis.text.x = element_text(size = 11, angle = 45, hjust = 1),  
+    axis.text.y = element_text(size = 11),  
+    axis.title.x = element_text(size = 13),  
+    axis.title.y = element_text(size = 13),  
+    legend.text = element_text(size = 11),  
+    legend.title = element_text(size = 13),  
+    legend.key.size = unit(1.2, "lines")  
+)
+
+```
+
+```{r protein_TOI median mad}
+D_filtered <- D %>%
+  filter(treatment %in% 4:18) %>%
+  mutate(
+    treatment = as.numeric(as.character(treatment)),
+    protein_TOI_lupin = ifelse(treatment < 10 & is.na(protein_TOI_lupin), 0, protein_TOI_lupin),
+    protein_TOI_oat = ifelse(treatment < 10 & is.na(protein_TOI_oat), 0, protein_TOI_oat)
+  )
+
+#labels
+D_filtered <- D_filtered %>%
+  mutate(
+    x_label = case_when(
+      treatment %in% 4:6  ~ as.character(cv_oat),   # Show cv_oat for treatments 4-6
+      treatment %in% 7:9  ~ as.character(cv_lupin), # Show cv_lupin for treatments 7-9
+      treatment %in% 10:18 ~ paste(cv_oat, "×", cv_lupin) # Show cv_oat × cv_lupin for mixtures
+    )
+  )
+
+#summarizedata
+D_summary <- D_filtered %>%
+  group_by(treatment, x_label, cv_oat, cv_lupin) %>%
+  summarise(
+    protein_TOI_oat_median = median(protein_TOI_oat, na.rm = TRUE),
+    protein_TOI_oat_mad = mad(protein_TOI_oat, na.rm = TRUE),
+    protein_TOI_lupin_median = median(protein_TOI_lupin, na.rm = TRUE),
+    protein_TOI_lupin_mad = mad(protein_TOI_lupin, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(protein_TOI_oat_median, protein_TOI_lupin_median), 
+               names_to = "crop", 
+               values_to = "protein_TOI") %>%
+  mutate(
+    mad = ifelse(crop == "protein_TOI_oat_median", protein_TOI_oat_mad, protein_TOI_lupin_mad),
+    crop = recode(crop, 
+                  "protein_TOI_oat_median" = "Oat Protein TOI", 
+                  "protein_TOI_lupin_median" = "Lupin Protein TOI")
+  )
+
+#error bars pos
+D_summary <- D_summary %>%
+  group_by(treatment) %>%
+  mutate(
+
+    lupin_protein_TOI = ifelse(crop == "Lupin Protein TOI", protein_TOI, 0),
+    oat_protein_TOI = ifelse(crop == "Oat Protein TOI", protein_TOI, 0),
+
+
+    stacked_protein_TOI = sum(protein_TOI, na.rm = TRUE),
+
+    errorbar_min = ifelse(crop == "Lupin Protein TOI", protein_TOI - mad, protein_TOI),  
+    errorbar_max = ifelse(crop == "Lupin Protein TOI", protein_TOI + mad, protein_TOI),  
+
+    errorbar_min = ifelse(crop == "Oat Protein TOI" & treatment >= 10, stacked_protein_TOI - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Protein TOI" & treatment >= 10, stacked_protein_TOI + mad, errorbar_max),
+
+    errorbar_min = ifelse(crop == "Oat Protein TOI" & treatment < 7, oat_protein_TOI - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Protein TOI" & treatment < 7, oat_protein_TOI + mad, errorbar_max),
+    errorbar_min = ifelse(crop == "Lupin Protein TOI" & treatment < 10, lupin_protein_TOI - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Lupin Protein TOI" & treatment < 10, lupin_protein_TOI + mad, errorbar_max)
+  )
+
+#NA handling
+D_summary <- D_summary %>%
+  ungroup() %>%
+  mutate(
+    errorbar_min = ifelse(is.na(errorbar_min), protein_TOI - mad, errorbar_min),
+    errorbar_max = ifelse(is.na(errorbar_max), protein_TOI + mad, errorbar_max)
+  )
+
+#stack order
+D_summary <- D_summary %>%
+  arrange(treatment, crop) # Forces "Oat Protein TOI" to be below "Lupin Protein TOI" in mixed treatments
+
+#color mapping
+D_summary <- D_summary %>%
+  mutate(fill_color = ifelse(crop == "Oat Protein TOI", as.character(cv_oat), as.character(cv_lupin)))
+
+D_summary <- D_summary %>%
+  filter(!is.na(fill_color))
+
+oat_colors <- c("Bison" = "#117733", "Lion" = "#44AA99", "Troll" = "#88CCEE")
+lupin_colors <- c("Jowisz" = "#CC6677", "Lunabor" = "#882255", "Probor" = "#AA4499")
+
+D_summary$fill_color <- factor(D_summary$fill_color, levels = c("Bison", "Lion", "Troll", "Lunabor", "Probor", "Jowisz"))
+
+color_palette <- c(oat_colors, lupin_colors)
+
+#plot
+p3 <- ggplot(D_summary, aes(x = factor(x_label, levels = unique(x_label)), y = protein_TOI, fill = fill_color)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.7, color = "black") + 
+  geom_errorbar(aes(ymin = errorbar_min, ymax = errorbar_max, group = crop), 
+                width = 0.3, 
+                color = "black") +  
+  scale_fill_manual(values = color_palette, guide = guide_legend(title = "Variety", override.aes = list(size = 6))) +
+  labs(
+    title = "Partial and total protein overyielding of mixed stands",
+    x = NULL,
+    y = expression("(Partial)" ~ TOI[protein]),
+    fill = "Variety"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15, hjust = 0),  
+    axis.text.x = element_text(size = 11, angle = 45, hjust = 1),  
+    axis.text.y = element_text(size = 11),  
+    axis.title.x = element_text(size = 13),  
+    axis.title.y = element_text(size = 13),  
+    legend.text = element_text(size = 11),  
+    legend.title = element_text(size = 13),  
+    legend.key.size = unit(1.2, "lines")  
+)
+
+
+```
+
+```{r LER median mad}
+D_filtered <- D %>%
+  filter(treatment %in% 4:18) %>%
+  mutate(
+    treatment = as.numeric(as.character(treatment)),
+    lupin_parler = ifelse(treatment < 10 & is.na(lupin_parler), 0, lupin_parler),
+    oat_parler_N = ifelse(treatment < 10 & is.na(oat_parler_N), 0, oat_parler_N)
+  )
+
+D_filtered <- D_filtered %>%
+  mutate(
+    x_label = case_when(
+      treatment %in% 4:6  ~ as.character(cv_oat),
+      treatment %in% 7:9  ~ as.character(cv_lupin),
+      treatment %in% 10:18 ~ paste(cv_oat, "×", cv_lupin)
+    )
+  )
+
+#median and mad
+D_summary <- D_filtered %>%
+  group_by(treatment, x_label, cv_oat, cv_lupin) %>%
+  summarise(
+    oat_parler_median = median(oat_parler_N, na.rm = TRUE),
+    oat_parler_mad = mad(oat_parler_N, na.rm = TRUE),
+    lupin_parler_median = median(lupin_parler, na.rm = TRUE),
+    lupin_parler_mad = mad(lupin_parler, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(oat_parler_median, lupin_parler_median), 
+               names_to = "crop", 
+               values_to = "parler") %>%
+  mutate(
+    mad = ifelse(crop == "oat_parler_median", oat_parler_mad, lupin_parler_mad),
+    crop = recode(crop, 
+                  "oat_parler_median" = "Oat Partial LER", 
+                  "lupin_parler_median" = "Lupin Partial LER")
+  )
+
+#error bars
+D_summary <- D_summary %>%
+  group_by(treatment) %>%
+  mutate(
+
+    lupin_parler_value = ifelse(crop == "Lupin Partial LER", parler, 0),
+    oat_parler_value = ifelse(crop == "Oat Partial LER", parler, 0),
+
+    stacked_parler = sum(parler, na.rm = TRUE),
+
+    errorbar_min = ifelse(crop == "Lupin Partial LER", parler - mad, parler),  
+    errorbar_max = ifelse(crop == "Lupin Partial LER", parler + mad, parler),  
+
+    errorbar_min = ifelse(crop == "Oat Partial LER" & treatment >= 10, stacked_parler - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Partial LER" & treatment >= 10, stacked_parler + mad, errorbar_max),
+
+    errorbar_min = ifelse(crop == "Oat Partial LER" & treatment < 7, oat_parler_value - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Oat Partial LER" & treatment < 7, oat_parler_value + mad, errorbar_max),
+    errorbar_min = ifelse(crop == "Lupin Partial LER" & treatment < 10, lupin_parler_value - mad, errorbar_min),
+    errorbar_max = ifelse(crop == "Lupin Partial LER" & treatment < 10, lupin_parler_value + mad, errorbar_max)
+  )
+
+#na handling
+D_summary <- D_summary %>%
+  ungroup() %>%
+  mutate(
+    errorbar_min = ifelse(is.na(errorbar_min), parler - mad, errorbar_min),
+    errorbar_max = ifelse(is.na(errorbar_max), parler + mad, errorbar_max)
+  )
+
+#stacking order
+D_summary <- D_summary %>%
+  arrange(treatment, crop)
+
+#color mapping
+D_summary <- D_summary %>%
+  mutate(fill_color = ifelse(crop == "Oat Partial LER", as.character(cv_oat), as.character(cv_lupin)))
+
+D_summary <- D_summary %>%
+  filter(!is.na(fill_color))
+
+oat_colors <- c("Bison" = "#117733", "Lion" = "#44AA99", "Troll" = "#88CCEE")
+lupin_colors <- c("Jowisz" = "#CC6677", "Lunabor" = "#882255", "Probor" = "#AA4499")
+
+D_summary$fill_color <- factor(D_summary$fill_color, levels = c("Bison", "Lion", "Troll", "Lunabor", "Probor", "Jowisz"))
+
+color_palette <- c(oat_colors, lupin_colors)
+
+#plot it
+p4 <- ggplot(D_summary, aes(x = factor(x_label, levels = unique(x_label)), y = parler, fill = fill_color)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.7, color = "black") + 
+  geom_errorbar(aes(ymin = errorbar_min, ymax = errorbar_max, group = crop), 
+                width = 0.3, 
+                color = "black") +  
+  scale_fill_manual(values = color_palette, guide = guide_legend(title = "Variety", override.aes = list(size = 6))) +
+  labs(
+    title = "Partial and total land equivalent ratio of mixed stands",
+    x = "Variety (mixture)",
+    y = "(Partial) LERs",
+    fill = "Variety"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15, hjust = 0),  
+    axis.text.x = element_text(size = 11, angle = 45, hjust = 1, color = "black"),  
+    axis.text.y = element_text(size = 11),  
+    axis.title.x = element_text(size = 13),  
+    axis.title.y = element_text(size = 13),  
+    legend.text = element_text(size = 11),  
+    legend.title = element_text(size = 13),  
+    legend.key.size = unit(1.2, "lines")  
+)
+
+
+```
+
+
+```{r main plot all productivity plots combined vertically}
+#If preview doesnt work - comment out last line of code in this chunk (ggsave)
+library(patchwork)
+
+p1 <- p1 + 
+  theme(
+    axis.text.x = element_blank(), 
+    axis.title.x = element_blank(), 
+    axis.ticks.x = element_line()
+)  # Legend remains for p1
+
+p2 <- p2 + 
+  guides(fill = "none") + 
+  theme(
+    axis.text.x = element_blank(), 
+    axis.title.x = element_blank(), 
+    axis.ticks.x = element_line()
+)
+
+p3 <- p3 + 
+  guides(fill = "none") +  #rm legend
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+  theme(
+    axis.title.x = element_text(size = 16, margin = margin(t = 5)),  # reduce top margin
+    axis.text.x = element_text(size = 14, angle = 45, hjust = 1, margin = margin(t = -0)),  # reduce distance
+    axis.ticks.x = element_line()
+  )
+
+p4 <- p4 + 
+  guides(fill = "none") + 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+  theme(
+    axis.text.x = element_blank(), 
+    axis.title.x = element_blank(), 
+    axis.ticks.x = element_line()
+) 
+
+
+#combine the plots
+final_plot <- (p1 / p4 / p2 / p3) + 
+  plot_annotation(tag_levels = c("A", "B", "C", "D")) & 
+  theme(legend.position = "right")
+
+#print
+print(final_plot)
+
+ggsave("writing/pictures/230320_mainplot.png", final_plot, dpi = 600, width = 8.27, height = 10.69, units = "in")
+
+```
+
+```{r, correlations  between oat and lupin yields}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+#Filter
+mixed_data <- D %>%
+  filter(treatment %in% 10:18) %>%
+  filter(complete.cases(oat_tha, lupin_tha, year, location))
+
+#Pearson correlation
+cor_test <- cor.test(mixed_data$oat_tha, mixed_data$lupin_tha, method = "pearson")
+cor_value <- cor_test$estimate
+p_value <- cor_test$p.value
+
+library(dplyr)
+
+mixed_data <- mixed_data %>%
+  mutate(location = dplyr::recode(location, 
+                                  "Re" = "Reckenholz", 
+                                  "Seegr" = "Seegräben"))
+
+yieldstability <- ggplot(mixed_data, aes(x = oat_tha, y = lupin_tha, color = factor(year), shape = location)) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_smooth(
+    data = mixed_data,
+    aes(x = oat_tha, y = lupin_tha),
+    method = "lm", se = TRUE,
+    color = "black", linetype = "solid",
+    inherit.aes = FALSE
+  ) +
+  labs(
+    title = NULL,
+    subtitle = NULL, #paste0("r = ", round(cor_value, 3), ", p = ", signif(p_value, 3)),
+    x = expression("Oat yield ("*t~ha^{-1}*")"),
+    y = expression("Lupin yield ("*t~ha^{-1}*")"),
+    color = "Year",
+    shape = "Site"
+  ) +
+  theme_minimal()
+
+ggsave("writing/pictures/250507_yieldstability.png", yieldstability, dpi = 600, width = 5, height = 5, units = "in")
+
+```
+
+```{r corr lers}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Prepare data
+box_data <- D %>%
+  filter(treatment %in% 10:18) %>%
+  filter(!is.na(oat_parler_N), !is.na(lupin_parler)) %>%
+  mutate(
+    site = recode(location,
+                  "Re" = "Reckenholz",
+                  "Seegr" = "Seegräben"),
+    year_site = paste(year, site)
+  ) %>%
+  group_by(year, site, treatment) %>%
+  summarise(
+    oat = mean(oat_parler_N, na.rm = TRUE),
+    lupin = mean(lupin_parler, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c("oat", "lupin"), names_to = "crop", values_to = "yield") %>%
+  mutate(
+    crop = recode(crop, "oat" = "Oat", "lupin" = "Lupin"),
+    year_site = factor(paste(year, site), levels = unique(paste(year, site)))
+  )
+
+# Plot
+ggplot(box_data, aes(x = year_site, y = yield, fill = crop)) +
+  geom_boxplot(position = position_dodge(width = 0.75)) +
+  scale_fill_manual(values = c("Oat" = "#F6BE00", "Lupin" = "#E87722")) +
+  labs(
+    x = NULL,
+    y = expression("Yield (t "*ha^{-1}*")"),
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    legend.text = element_text(size = 12),
+    legend.position = "top"
+  )
+
+#t-test
+library(dplyr)
+library(tidyr)
+library(broom)
+library(purrr)
+
+# Prepare data
+comparison_data <- D %>%
+  filter(treatment %in% 10:18) %>%
+  filter(!is.na(oat_parler_N), !is.na(lupin_parler)) %>%
+  mutate(
+    site = recode(location, "Re" = "Reckenholz", "Seegr" = "Seegräben"),
+    year_site = paste(year, site)
+  ) %>%
+  group_by(year, site, block_ID) %>%
+  summarise(
+    oat = mean(oat_parler_N, na.rm = TRUE),
+    lupin = mean(lupin_parler, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Paired t-test for each year-site group
+t_test_results <- comparison_data %>%
+  group_by(year, site) %>%
+  summarise(
+    test = list(t.test(oat, lupin, paired = TRUE)),
+    .groups = "drop"
+  ) %>%
+  mutate(tidy = map(test, tidy)) %>%
+  unnest(tidy) %>%
+  mutate(
+    mean_oat = map_dbl(test, ~ mean(.x$data$x, na.rm = TRUE)),
+    mean_lupin = map_dbl(test, ~ mean(.x$data$y, na.rm = TRUE))
+  ) %>%
+  select(year, site, mean_oat, mean_lupin, estimate, statistic, p.value) %>%
+  rename(
+    t_statistic = statistic,
+    p_val = p.value,
+    mean_difference = estimate
+  ) %>%
+  arrange(p_val)
+
+# Print result
+print(t_test_results)
+
+
+```
+
+```{r, expanded boxplots based on hypotheses}
+# str(AEH, max.level=1)
+# str(AEH[["H13.l"]], 1)
+# str(AEH[["H13.l"]]$model, 1)
+#AEH[["H13.l"]]$model$model
+#tmp <- update(AEH[["H13.l"]]$model$model, .~1 + (1|block_ID))
+#fixef(tmp)
+
+
+AEH <- readRDS("cache/AEH.rds")
+library(ggplot2)
+
+#Difference in ripeness
+#AEH[["H2.ol"]]$plot
+ripediff_plot <- AEH[["H2.ol"]]$plot +
+  labs(
+    title = NULL,
+    subtitle = NULL,  # rmv subtitle
+    y = expression("Difference in ripeness (BBCH stages)")
+  ) +
+  theme(
+    text = element_text(family = ""),
+    plot.title = element_text(size = 15, hjust = 0),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines")
+  )
+ggsave("writing/pictures/250507_ripediff_plot.png", ripediff_plot, dpi = 600, width = 6, height = 4, units = "in")
+
+#cereal leaf beetle
+#AEH[["H51.o"]]$plot
+oulema_plot <- AEH[["H51.o"]]$plot +
+  geom_hline(yintercept = 4.47, linetype = "dashed", color = "black") +
+  labs(
+    title = NULL,
+    subtitle = NULL,
+    y = expression("Cereal leaf beetle count (sqrt)"),
+    x = NULL 
+  ) +
+  scale_x_discrete(labels = c("Jowisz", "Lunabor", "Probor", "pure")) +
+  theme(
+    text = element_text(family = ""),
+    plot.title = element_text(size = 15, hjust = 0),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 12),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines")
+  )
+#ggsave("writing/pictures/250507_oulema_plot.png", oulema_plot, dpi = 600, width = 6, height = 4, units = "in")
+
+#Weed volumes
+#AEH[["H7.lo"]]$plot
+weedvol_plot <- AEH[["H7.lo"]]$plot +
+  labs(
+    title = NULL,
+    subtitle = NULL,
+    y = expression("Weed volume (log"["10"]*", %)"),
+    x = NULL  # Optional: remove x-axis title
+  ) +
+  scale_x_discrete(labels = c("Jowisz", "Lunabor", "Probor", "pure")) +
+  theme(
+    text = element_text(family = ""),
+    plot.title = element_text(size = 15, hjust = 0),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 12),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines"),
+    strip.background = element_blank(),
+    panel.background = element_blank(),
+    panel.grid.major = element_line(color = "grey80", size = 0.5),
+    panel.grid.minor = element_line(color = "grey90", size = 0.25)      
+  )
+ggsave("writing/pictures/250507_weedvol_plot.png", weedvol_plot, dpi = 600, width = 6, height = 4, units = "in")
+
+```
+
+```{r, cereal leaf beetle plot}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+D_filtered <- D[!is.na(D$cv_oat), ]
+
+D <- D %>%
+  mutate(
+    cv_oat = ifelse(is.na(cv_oat), "pure", as.character(cv_oat)),
+    cv_lupin = ifelse(is.na(cv_lupin), "nothing", as.character(cv_lupin)),
+    cv_oat = factor(cv_oat, levels = c("Bison", "Lion", "Troll", "pure")),
+    cv_lupin = factor(cv_lupin, levels = c("Jowisz", "Lunabor", "Probor", "nothing")),
+    stand = factor(stand, levels = c("mixed", "pure"))
+  )
+
+D_22 <- D %>%
+  filter(year == 2022) %>%
+  mutate(y = oat_oulema_dis)
+
+#labels
+oat_labels <- c(
+  "Bison" = "Bison mixed with:",
+  "Lion" = "Lion mixed with:",
+  "Troll" = "Troll mixed with:"
+)
+#plot for 2022
+oulema2022 <- ggplot(D_22, aes(x = cv_lupin, y = y, fill = cv_lupin, linetype = stand)) +
+  geom_boxplot(outlier.shape = NA, notch = TRUE) +
+  geom_jitter(alpha = 0.3, height = 0) +
+  facet_wrap(~cv_oat, nrow = 1, strip.position = "bottom", labeller = as_labeller(oat_labels)) +
+  geom_hline(yintercept = 20, linetype = "dashed", color = "black") +
+  scale_x_discrete(labels = c("Jowisz", "Lunabor", "Probor", "pure")) +
+  scale_linetype_manual(values = c("mixed" = "solid", "pure" = "twodash")) +
+  guides(fill = "none") +
+  theme_minimal() +
+  labs(
+    y = expression("Cereal leaf beetles"),
+    x = NULL
+  ) +
+  theme(
+    plot.title = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 12),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines")
+  )
+
+#filter and prepare data for 2023
+D_23 <- D %>%
+  filter(year == 2023) %>%
+  mutate(y = oat_oulema_dis)
+
+#plot for 2023
+oulema2023 <- ggplot(D_23, aes(x = cv_lupin, y = y, fill = cv_lupin, linetype = stand)) +
+  geom_boxplot(outlier.shape = NA, notch = TRUE) +
+  geom_jitter(alpha = 0.3, height = 0) +
+  facet_wrap(~cv_oat, nrow = 1, strip.position = "bottom", labeller = as_labeller(oat_labels)) +
+  geom_hline(yintercept = 20, linetype = "dashed", color = "black") +
+  scale_x_discrete(labels = c("Jowisz", "Lunabor", "Probor", "pure")) +
+  scale_linetype_manual(values = c("mixed" = "solid", "pure" = "twodash")) +
+  guides(fill = "none") +
+  theme_minimal() +
+  labs(
+    y = expression("Cereal leaf beetles"),
+    x = NULL
+  ) +
+  theme(
+    plot.title = element_blank(),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 12),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines")
+  )
+
+#combine
+combined_oulema <- oulema2022 / oulema2023 +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+
+#save
+ggsave("writing/pictures/250507_combined_oulema.png", combined_oulema,
+       dpi = 600, width = 7, height = 6, units = "in")
+
+```

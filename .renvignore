@@ -1,0 +1,17 @@
+# Ignore large data files
+data/
+*.csv
+*.rds
+
+# Ignore Quarto render outputs
+_site/
+*.html
+*.pdf
+
+# Ignore version control files
+.git/
+.gitignore
+
+# Ignore temporary files
+*.log
+.DS_Store
