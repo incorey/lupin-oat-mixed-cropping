@@ -1,5 +1,50 @@
-# Supplements
+# Supplemental materials
 
+![Figure 1: Precipitation and daily average temperatures of the months March to July for the years 2022 and 2023 in the sites Seegräben and Reckenholz. The bars represent the precipitation in mm, the dotted line the average temperature in degrees celsius.](/writing/pictures/weather_data_2223.png){#fig-des width=50%}
 
-The modelling output containing all hypothesis and modelling specifications is available under: ... ... > provide a html?
+The modelling output containing all hypothesis and modelling specifications is available under: Appendix A.
+
+The code, data and original materials are available under: LINK (provided upon acceptance, the folder contains all data, code, quarto files, library and other files).
+
+Table S1: The attribute name was used across the publication to describe the assessed traits in mixed cropping, whereas the corresponding variable name was used to run the statistical modelling.
+
+| Attribute name | Variable name                                   |
+| -------------- | ----------------------------------------------- |
+| Soil coverage                | date_when_covered_diff_mix_to_pure_oat   |
+| Soil coverage                | date_when_covered_diff_mix_to_pure_lupin |
+| Soil coverage                | day_of_year_when_covered             |
+| Lupin flowering               | lupin_bbch_65_mix_to_pure_diff           |
+| Ears emergence in oat               | oat_bbch_ears_mix_to_pure_diff           |
+| Oat-NLL growth stage difference at harvest                | ripe_diff_oat_to_lupin_bbch             |
+| Lodging               |lodging_perc_mid_july_lupin              |
+| Height NLL               | height_mid_may_lupin                     |
+| Height oat           | height_june_oat                        |
+| Height NLL           | height_june_lupin                      |
+| Oat tiller            | oat_tillers_average                    |
+| Cereal leaf beetle oat                | sqrt_oat_oulema_dis                     |
+| Rust in oat               | sqrt_oat_rust_inc                       |
+| Anthracnose NLL               | log10_lupin_athracnose_no_pods          |
+| Determinism NLL              | sqrt_lupin_det_perc_flowering           |
+| Chlorosis NLL               | lupin_chlorosis_inc                     |
+| Weed volume    | log10_weed_vol_percent_june              |
+| Height difference  | height_difference_may                     |
+| Height difference  | height_difference_june                    |
+| Height difference  | height_difference_july                    |
+| LER               | ler_N                                      |
+| pLER<sub>oat</sub>               | oat_parler_N                            |
+| pLER<sub>lupin</sub>               | lupin_parler                            |
+| TKW NLL               | lupin_tkw                               |
+| TKW at               | oat_tkw                                 |
+| HLW oat              | oat_hlw                                 |
+| Protein content of NLL              | lupin_protein_perc                        |
+| Protein content of oat             | oat_protein_perc                          |
+| Protein yield           | lupin_proteinyield_kgha                   |
+| Protein yield oat           | oat_proteinyield_kgha                     |
+| TOI<sub>protein</sub>               | protein_TOI                               |
+| TOI<sub>protein, oat</sub>               | protein_TOI_oat                           |
+| TOI<sub>protein, lupin</sub>               | protein_TOI_lupin                        |
+| oat yield               | oat_tha                                   |
+| NLL yield               | lupin_tha                                 |
+| Protein yield               | protein_yield_kgha                        |
+
 

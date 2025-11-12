@@ -1,4 +1,4 @@
-latest_file <- "data/250303_MastersheetLupins_final.xlsx"
+latest_file <- "data/250117_Mastersheet_lupins_merged_2022_2023_final.xlsx"
 
 library(readxl)
 # DATA
@@ -25,7 +25,8 @@ D_meta$`Data type`[D_meta$`Data type` %in% c(
   "percent",
   "percentage"
 )] <- "numeric"
-
+# Checks
+stopifnot(nrow(D_orig) == 320)
 
 ### TYPE ENCODING
 D_meta[, "Data type"] |> table() |> cbind()
