@@ -4,7 +4,7 @@
 
 The modelling output containing all hypothesis and modelling specifications is available under: Appendix A.
 
-The code, data and original materials are available under: LINK (provided upon acceptance, the folder contains all data, code, quarto files, library and other files).
+The repository, including the analytical code and data, is available at https://github.com/incorey/lupin-oat-mixed-cropping.
 
 Table S1: The attribute name was used across the publication to describe the assessed traits in mixed cropping, whereas the corresponding variable name was used to run the statistical modelling.
 
