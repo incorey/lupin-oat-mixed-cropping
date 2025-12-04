@@ -1,5 +1,9 @@
 #in the .Rprofile, deactivate .libPaths("renv/library/macos/R-4.4/aarch64-apple-darwin20"), and direct the library to the renv.lock file.
 
+# Copyright
+
+© 2025 Lukas Graz, Yannik Schlup
+This project is released under the MIT License (see `LICENSE`).
 
 # Setup
 - `hypotheses.csv`
