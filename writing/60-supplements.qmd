@@ -1,6 +1,6 @@
 # Supplemental materials
 
-![Figure 1: Precipitation and daily average temperatures of the months March to July for the years 2022 and 2023 in the sites Seegräben and Reckenholz. The bars represent the precipitation in mm, the dotted line the average temperature in degrees celsius.](/writing/pictures/weather_data_2223.png){#fig-des width=50%}
+![Figure 1: Precipitation and daily average temperatures of the months March to July for the years 2022 and 2023 in the sites Seegräben and Reckenholz. The bars represent the precipitation in mm, the dotted line the average temperature in degrees Celsius.](/writing/pictures/weather_data_2223.png){#fig-des width=50%}
 
 The modelling output containing all hypothesis and modelling specifications is available under: Appendix A.
 
