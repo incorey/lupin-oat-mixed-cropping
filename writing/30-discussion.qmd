@@ -36,7 +36,7 @@ The authors declare that they have no known personal relationships or competing 
 During the preparation of this work the authors used GPT-4 (OpenAI, California, USA) to improve the structure and efficiency of the code to render figures and GPT-o3pro (OpenAI, California, USA) in support of writing the abstract. After using this tool/service, the authors reviewed and edited the content as needed and take full responsibility for the created content.
 
 # Data and analytical code
-The analytical code and data are available under the link: COPY PASTE LINK HERE (public link).
+The analytical code and data are available under the link: https://github.com/incorey/lupin-oat-mixed-cropping.
 
 # Acknowledgments
 We gratefully acknowledge the field technicians for their invaluable expertise in the cultivation of NLL and oats as well as the interns and MSc students for their great assistance in the field and laboratory work.
