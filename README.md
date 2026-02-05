@@ -5,6 +5,12 @@
 © 2025 Lukas Graz, Yannik Schlup
 This project is released under the MIT License (see `LICENSE`).
 
+[![DOI](https://zenodo.org/badge/1001453840.svg)](https://doi.org/10.5281/zenodo.18493694)
+
+10.5281/zenodo.18493695
+
+Citation can metadata can be found in the CITATION.cff file.
+
 # Setup
 - `hypotheses.csv`
   - each Hypothethis == 1 row
