@@ -9,7 +9,7 @@ This project is released under the MIT License (see `LICENSE`).
 
 10.5281/zenodo.18493695
 
-Citation can metadata can be found in the CITATION.cff file.
+Citation metadata can be found in the CITATION.cff file.
 
 # Setup
 - `hypotheses.csv`
